@@ -19,3 +19,6 @@ src-tauri/gen/
 # Client node_modules (legacy)
 client/node_modules/
 server/node_modules/
+
+# Go binary
+server/server
