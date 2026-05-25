@@ -12,6 +12,7 @@ import (
 	"github.com/hinder110/yueduqi-go/server/config"
 	"github.com/hinder110/yueduqi-go/server/db"
 	"github.com/hinder110/yueduqi-go/server/middleware"
+	"github.com/hinder110/yueduqi-go/server/model"
 )
 
 type authBody struct {
@@ -60,9 +61,9 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, 201, map[string]any{
+	writeJSON(w, 201, model.APIResponse{Success: true, Data: map[string]any{
 		"id": id, "username": username, "created_at": createdAt,
-	})
+	}})
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
