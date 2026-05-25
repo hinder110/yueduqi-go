@@ -1,0 +1,9 @@
+{
+  "name": "阅读器",
+  "short_name": "阅读器",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0D9488",
+  "background_color": "#F4F7F6",
+  "icons": []
+}

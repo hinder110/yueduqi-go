@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+client/dist
+server/dist
+
+# Env
+.env
+.env.local
+
+# IDE
+.idea
+.vscode
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+
+# Docs (keep out of image)
+*.md
+
+# Tests
+**/*.test.ts
+**/*.test.tsx

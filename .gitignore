@@ -1,0 +1,21 @@
+node_modules/
+dist/
+*.log
+.env
+.DS_Store
+Thumbs.db
+.claude/
+*.tsbuildinfo
+# Book source files (copyright, do not distribute)
+shuyuan_*.json
+test_sources.json
+# Tauri build
+src-tauri/target/
+src-tauri/gen/
+# SQLite database
+*.db
+*.db-journal
+*.db-wal
+# Client node_modules (legacy)
+client/node_modules/
+server/node_modules/
