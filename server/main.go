@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/hinder110/yueduqi-go/server/cache"
 	"github.com/hinder110/yueduqi-go/server/config"
@@ -43,6 +45,25 @@ func main() {
 	mux.HandleFunc("POST /api/bookshelf", middleware.Auth(handler.HandleBookshelfAdd))
 	mux.HandleFunc("DELETE /api/bookshelf/{id}", middleware.Auth(handler.HandleBookshelfDelete))
 	mux.HandleFunc("PUT /api/bookshelf/{id}/progress", middleware.Auth(handler.HandleProgressUpdate))
+
+	// 静态前端 + SPA fallback（最后注册，优先级低于 api/*）
+	clientDist := filepath.Join("..", "client", "dist")
+	if _, err := os.Stat(clientDist); err == nil {
+		fs := http.FileServer(http.Dir(clientDist))
+		mux.HandleFunc("GET /{path...}", func(w http.ResponseWriter, r *http.Request) {
+			checkPath := r.URL.Path
+			if checkPath == "" || checkPath == "/" {
+				checkPath = "/index.html"
+			}
+			fp := filepath.Join(clientDist, checkPath)
+			if _, err := os.Stat(fp); os.IsNotExist(err) {
+				http.ServeFile(w, r, filepath.Join(clientDist, "index.html"))
+				return
+			}
+			fs.ServeHTTP(w, r)
+		})
+		log.Println("static: serving client/dist")
+	}
 
 	log.Printf("Server running at http://localhost:%s", config.Port)
 	log.Fatal(http.ListenAndServe(":"+config.Port, mux))
