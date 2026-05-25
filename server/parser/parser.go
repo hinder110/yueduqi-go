@@ -15,9 +15,9 @@ type Parser interface {
 func ForSource(source string) Parser {
 	switch source {
 	case "biquge900":
-		return nil // TODO
+		return &BiqugeParser{}
 	case "qixinge":
-		return nil // TODO
+		return &QixingeParser{}
 	default:
 		return &GuangyuParser{}
 	}
