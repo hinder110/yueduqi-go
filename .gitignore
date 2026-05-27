@@ -5,6 +5,7 @@ dist/
 .DS_Store
 Thumbs.db
 .claude/
+.codegraph/
 *.tsbuildinfo
 # Book source files (copyright, do not distribute)
 shuyuan_*.json

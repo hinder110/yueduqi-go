@@ -104,15 +104,23 @@ impl AppState {
 #[tauri::command]
 async fn search_books(
     keyword: String,
+    source_key: Option<String>,
     state: tauri::State<'_, AppState>,
 ) -> Result<Vec<SearchResult>, String> {
-    let sources = {
+    let all_sources = {
         let guard = state.sources.lock().map_err(|e| e.to_string())?;
         guard.clone()
     };
-    // Always include mock source for offline testing
+    // Filter by source_key if specified
+    let sources: Vec<source_manager::ParsedSource> = if let Some(ref key) = source_key {
+        if key == "__mock__" {
+            return Ok(mock_source::mock_search(&keyword));
+        }
+        all_sources.into_iter().filter(|s| s.key == *key).collect()
+    } else {
+        all_sources
+    };
     let mut results = mock_source::mock_search(&keyword);
-    // Also try network sources
     match generic_parser::search(&keyword, &sources).await {
         Ok(net_results) => results.extend(net_results),
         Err(e) => log::warn!("Network search failed: {}", e),

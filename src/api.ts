@@ -1,8 +1,8 @@
 import { invoke } from '@tauri-apps/api/core';
 import type { Book, Chapter, ChapterContent, SourceInfo, HistoryEntry, SearchResult } from './types';
 
-export async function searchBooks(keyword: string): Promise<SearchResult[]> {
-  return invoke<SearchResult[]>('search_books', { keyword });
+export async function searchBooks(keyword: string, sourceKey?: string): Promise<SearchResult[]> {
+  return invoke<SearchResult[]>('search_books', { keyword, sourceKey });
 }
 
 export async function getChapters(bookId: string, sourceKey: string): Promise<Chapter[]> {

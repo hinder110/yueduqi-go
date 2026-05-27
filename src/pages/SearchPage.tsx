@@ -10,6 +10,7 @@ export default function SearchPage() {
   const [error, setError] = useState('');
   const [searched, setSearched] = useState(false);
   const [sources, setSources] = useState<SourceInfo[]>([]);
+  const [currentSource, setCurrentSource] = useState<string>('');
   const [bookshelfIds, setBookshelfIds] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
 
@@ -44,7 +45,7 @@ export default function SearchPage() {
     setResults([]);
     setSearched(true);
     try {
-      const res = await searchBooks(kw);
+      const res = await searchBooks(kw, currentSource || undefined);
       setResults(res);
       const total = res.reduce((sum, r) => sum + r.books.length, 0);
       if (total === 0) setError('未找到相关书籍');
@@ -97,9 +98,21 @@ export default function SearchPage() {
 
       {sources.length > 0 && (
         <div className="source-selector">
-          <span style={{ fontSize: 13, color: '#888', marginRight: 4 }}>
-            {sources.filter((s) => s.enabled).length} 个书源可用
-          </span>
+          <button
+            className={`source-tag ${currentSource === '' ? 'active' : ''}`}
+            onClick={() => setCurrentSource('')}
+          >
+            全部 ({sources.filter((s) => s.enabled).length})
+          </button>
+          {sources.filter((s) => s.enabled).map((s) => (
+            <button
+              key={s.key}
+              className={`source-tag ${currentSource === s.key ? 'active' : ''}`}
+              onClick={() => setCurrentSource(s.key)}
+            >
+              {s.name}
+            </button>
+          ))}
         </div>
       )}
 
