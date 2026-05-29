@@ -2,8 +2,8 @@ package handler
 
 import (
 	"net/http"
-	"time"
 
+	"github.com/hinder110/yueduqi-go/server/cache"
 	"github.com/hinder110/yueduqi-go/server/model"
 )
 
@@ -17,7 +17,7 @@ func (s *Server) HandleSearch(w http.ResponseWriter, r *http.Request) {
 	p := ParserForSource(source)
 
 	cacheKey := "search:" + source + ":" + keyword
-	cacheOrFetch(s, w, r, cacheKey, 30*time.Minute, "搜索失败", func() ([]model.Book, error) {
+	cacheOrFetch(s, w, r, cacheKey, cache.SearchTTL, "搜索失败", func() ([]model.Book, error) {
 		return p.SearchBooks(r.Context(), keyword)
 	})
 }

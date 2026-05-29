@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ReaderSettingsProvider } from './contexts/ReaderSettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import SearchPage from './pages/SearchPage';
@@ -13,6 +14,7 @@ export default function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <AuthProvider>
+          <ReaderSettingsProvider>
           <Routes>
         <Route path="/" element={<SearchPage />} />
         <Route path="/chapters" element={<ChaptersPage />} />
@@ -21,6 +23,7 @@ export default function App() {
         <Route path="/bookshelf" element={<BookshelfPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </ReaderSettingsProvider>
       </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>

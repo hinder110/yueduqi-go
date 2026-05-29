@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { fetchChapters, fetchBookshelf, addToBookshelf } from '../api';
+import { fetchChapters } from '../api/reader';
+import { fetchBookshelf, addToBookshelf } from '../api/bookshelf';
 import { useAuth } from '../contexts/AuthContext';
 import { useAsync } from '../hooks/useAsync';
 import StatusMessage from '../components/StatusMessage';

@@ -17,12 +17,12 @@ vi.stubGlobal('localStorage', {
 });
 
 // Mock API 调用
-vi.mock('../api', () => ({
+vi.mock('../api/auth', () => ({
   login: vi.fn(),
   register: vi.fn(),
 }));
 
-import { login as mockLogin, register as mockRegister } from '../api';
+import { login as mockLogin, register as mockRegister } from '../api/auth';
 
 function ShowAuth() {
   const { user, loading, login, register, logout } = useAuth();

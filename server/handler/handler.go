@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -9,17 +8,13 @@ import (
 
 	"github.com/hinder110/yueduqi-go/server/cache"
 	"github.com/hinder110/yueduqi-go/server/model"
+	"github.com/hinder110/yueduqi-go/server/parser"
 )
 
 type Server struct {
 	Cache  *cache.Cache
-	Parser Parser
-}
-
-type Parser interface {
-	SearchBooks(ctx context.Context, keyword string) ([]model.Book, error)
-	GetChapters(ctx context.Context, bookID, innerSource, innerTab string) ([]model.Chapter, error)
-	GetChapterContent(ctx context.Context, bookID, itemID, innerSource, innerTab string) (model.ChapterContent, error)
+	Parser parser.Parser
+	Health *SourceHealth
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

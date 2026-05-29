@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchBookshelf, removeFromBookshelf } from '../api';
+import { fetchBookshelf, removeFromBookshelf } from '../api/bookshelf';
 import { useAuth } from '../contexts/AuthContext';
 import { useAsync } from '../hooks/useAsync';
 import StatusMessage from '../components/StatusMessage';

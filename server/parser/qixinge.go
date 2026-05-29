@@ -2,6 +2,7 @@ package parser
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -10,6 +11,8 @@ import (
 
 	"github.com/hinder110/yueduqi-go/server/model"
 )
+
+func init() { Register("qixinge", &QixingeParser{}) }
 
 const qixingeBase = "http://www.qixinge.net"
 
@@ -25,7 +28,15 @@ func (p *QixingeParser) SearchBooks(ctx context.Context, keyword string) ([]mode
 	}
 	defer resp.Body.Close()
 
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	htmlBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return ParseQixingeSearchHTML(string(htmlBytes))
+}
+
+func ParseQixingeSearchHTML(html string) ([]model.Book, error) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +91,15 @@ func (p *QixingeParser) GetChapters(ctx context.Context, bookID, _, _ string) ([
 	}
 	defer resp.Body.Close()
 
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	htmlBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return ParseQixingeChaptersHTML(string(htmlBytes))
+}
+
+func ParseQixingeChaptersHTML(html string) ([]model.Chapter, error) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 	if err != nil {
 		return nil, err
 	}

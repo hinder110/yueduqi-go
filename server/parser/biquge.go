@@ -14,6 +14,8 @@ import (
 	"github.com/hinder110/yueduqi-go/server/model"
 )
 
+func init() { Register("biquge900", &BiqugeParser{}) }
+
 const biqugeBase = "http://m.biquge900.com"
 
 type BiqugeParser struct{}
@@ -31,7 +33,15 @@ func (p *BiqugeParser) SearchBooks(ctx context.Context, keyword string) ([]model
 	}
 	defer resp.Body.Close()
 
-	doc, err := goquery.NewDocumentFromReader(utf8Reader(resp.Body))
+	htmlBytes, err := io.ReadAll(utf8Reader(resp.Body))
+	if err != nil {
+		return nil, err
+	}
+	return ParseSearchHTML(string(htmlBytes))
+}
+
+func ParseSearchHTML(html string) ([]model.Book, error) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +81,15 @@ func (p *BiqugeParser) GetChapters(ctx context.Context, bookID, _, _ string) ([]
 	}
 	defer resp.Body.Close()
 
-	doc, err := goquery.NewDocumentFromReader(utf8Reader(resp.Body))
+	htmlBytes, err := io.ReadAll(utf8Reader(resp.Body))
+	if err != nil {
+		return nil, err
+	}
+	return ParseBiqugeChapters(string(htmlBytes))
+}
+
+func ParseBiqugeChapters(html string) ([]model.Chapter, error) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 	if err != nil {
 		return nil, err
 	}
