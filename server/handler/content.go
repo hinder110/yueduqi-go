@@ -2,8 +2,8 @@ package handler
 
 import (
 	"net/http"
-	"time"
 
+	"github.com/hinder110/yueduqi-go/server/cache"
 	"github.com/hinder110/yueduqi-go/server/model"
 )
 
@@ -20,7 +20,7 @@ func (s *Server) HandleContent(w http.ResponseWriter, r *http.Request) {
 	p := ParserForSource(source)
 
 	cacheKey := "content:" + source + ":" + bookID + ":" + itemID + ":" + innerSource + ":" + innerTab
-	cacheOrFetch(s, w, r, cacheKey, 24*time.Hour, "获取正文失败", func() (model.ChapterContent, error) {
+	cacheOrFetch(s, w, r, cacheKey, cache.ContentTTL, "获取正文失败", func() (model.ChapterContent, error) {
 		return p.GetChapterContent(r.Context(), bookID, itemID, innerSource, innerTab)
 	})
 }

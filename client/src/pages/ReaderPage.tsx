@@ -1,15 +1,11 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { fetchContent, fetchBookshelf, updateProgress } from '../api';
+import { fetchContent } from '../api/reader';
+import { fetchBookshelf, updateProgress } from '../api/bookshelf';
 import { useAuth } from '../contexts/AuthContext';
+import { useReaderSettings } from '../contexts/ReaderSettingsContext';
 import StatusMessage from '../components/StatusMessage';
 import type { Book, Chapter, ChapterContent } from '../types';
-
-type Theme = 'light' | 'dark';
-type FontSize = 'sm' | 'md' | 'lg';
-
-const FONT_LABELS: Record<FontSize, string> = { sm: 'A⁻', md: 'A', lg: 'A⁺' };
-const FONT_NEXT: Record<FontSize, FontSize> = { sm: 'md', md: 'lg', lg: 'sm' };
 
 export default function ReaderPage() {
   const location = useLocation();
@@ -25,9 +21,8 @@ export default function ReaderPage() {
   const [content, setContent] = useState<ChapterContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [theme, setTheme] = useState<Theme>('light');
-  const [fontSize, setFontSize] = useState<FontSize>('md');
   const preloaded = useRef<Map<string, ChapterContent>>(new Map());
+  const { fontSize, theme, cycleFontSize, toggleTheme } = useReaderSettings();
   const shelfBookId = useRef<number | null>(null);
   const progressSynced = useRef(false);
 
@@ -150,14 +145,14 @@ export default function ReaderPage() {
         <div className="topbar-actions">
           <button
             className="topbar-btn"
-            onClick={() => setFontSize(FONT_NEXT[fontSize])}
+            onClick={cycleFontSize}
             title="切换字号"
           >
-            {FONT_LABELS[fontSize]}
+            {fontSize === 'sm' ? 'A⁻' : fontSize === 'md' ? 'A' : 'A⁺'}
           </button>
           <button
             className="topbar-btn"
-            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            onClick={toggleTheme}
             title={theme === 'light' ? '切换夜间模式' : '切换日间模式'}
           >
             {theme === 'light' ? '🌙' : '☀️'}

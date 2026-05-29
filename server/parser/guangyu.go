@@ -14,6 +14,8 @@ import (
 	"github.com/hinder110/yueduqi-go/server/model"
 )
 
+func init() { Register("guangyu", &GuangyuParser{}) }
+
 var hosts = []string{
 	"https://v1.gyks.cf",
 	"https://v2.gyks.cf",

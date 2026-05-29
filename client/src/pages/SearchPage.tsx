@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchSearch, fetchHotBooks } from '../api';
+import { fetchSearch, fetchHotBooks } from '../api/search';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAsync } from '../hooks/useAsync';

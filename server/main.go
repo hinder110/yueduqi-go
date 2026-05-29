@@ -6,12 +6,14 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/hinder110/yueduqi-go/server/cache"
 	"github.com/hinder110/yueduqi-go/server/config"
 	"github.com/hinder110/yueduqi-go/server/db"
 	"github.com/hinder110/yueduqi-go/server/handler"
 	"github.com/hinder110/yueduqi-go/server/middleware"
+	"github.com/hinder110/yueduqi-go/server/parser"
 )
 
 func main() {
@@ -24,9 +26,15 @@ func main() {
 	}
 
 	redisAddr := config.RedisHost + ":" + config.RedisPort
+	sourceNames := []string{"guangyu", "biquge900", "qixinge"}
+	health := handler.NewSourceHealth(sourceNames, parser.Get)
 	s := &handler.Server{
-		Cache: cache.New(redisAddr),
+		Cache:  cache.New(redisAddr),
+		Health: health,
 	}
+
+	go health.ProbeLoop(ctx, 15*time.Minute)
+	go func() { health.ProbeAll(ctx) }()
 
 	mux := http.NewServeMux()
 
@@ -35,6 +43,7 @@ func main() {
 	mux.HandleFunc("GET /api/hot", s.HandleHot)
 	mux.HandleFunc("GET /api/chapters", s.HandleChapters)
 	mux.HandleFunc("GET /api/content", s.HandleContent)
+	mux.HandleFunc("GET /api/sources/status", s.HandleSourceStatus)
 
 	// 用户系统
 	mux.HandleFunc("POST /api/auth/register", handler.HandleRegister)
